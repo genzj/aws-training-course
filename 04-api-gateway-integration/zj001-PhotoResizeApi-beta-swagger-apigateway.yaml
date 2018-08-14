@@ -1,0 +1,94 @@
+---
+swagger: "2.0"
+info:
+  version: "2018-08-14T15:47:42Z"
+  title: "zj001-PhotoResizeApi"
+host: "ibz3fmjcn9.execute-api.us-east-1.amazonaws.com"
+basePath: "/beta"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      consumes:
+      - "application/json"
+      produces:
+      - "image/jpeg"
+      parameters:
+      - name: "filename"
+        in: "query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:367481520399:function:zj001_get_resized_photo/invocations"
+        responses:
+          default:
+            statusCode: "200"
+            contentHandling: "CONVERT_TO_BINARY"
+        requestTemplates:
+          application/json: "{\n\"imageKey\": \"$input.params('filename')\"\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    post:
+      consumes:
+      - "application/octet-stream"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "filename"
+        in: "query"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "Empty"
+        required: true
+        schema:
+          $ref: "#/definitions/Empty"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+      x-amazon-apigateway-request-validator: "验证查询字符串参数和标头"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:367481520399:function:zj001_post_image/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        requestTemplates:
+          application/octet-stream: "{\n    \"imageKey\": \"$input.params('filename')\"\
+            ,\n    \"image\": \"$input.body\"\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /zj001_post_image:
+    x-amazon-apigateway-any-method:
+      responses:
+        200:
+          description: "200 response"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:367481520399:function:zj001_post_image/invocations"
+        responses:
+          .*:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+definitions:
+  Empty:
+    type: "object"
+    title: "Empty Schema"
+x-amazon-apigateway-request-validators:
+  验证查询字符串参数和标头:
+    validateRequestParameters: true
+    validateRequestBody: false
+x-amazon-apigateway-binary-media-types:
+- "application/octet-stream"
