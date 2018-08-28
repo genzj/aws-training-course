@@ -1,7 +1,7 @@
 import hashlib, base64, json
 from datetime import datetime
 from urllib import request, parse
-from pprint import pprint
+from pprint import pprint, pformat
 
 
 # 和风天气签名生成算法-Python版本
@@ -57,11 +57,17 @@ def openweathermap(city):
 
 
 def lambda_handler(event, context):
-    city = event.get("city", "Shanghai")
+    pprint(event)
+    city = event.get('queryStringParameters', dict()).get("city", "Shanghai")
     answer = {
         "hefeng": hefeng(city),
         "openweathermap": openweathermap(city)
     }
     pprint(answer)
-    return json.dumps(answer)
+    return {
+            'statusCode': 200,
+            'headers': { 'Content-Type': 'application/json' },
+            'body': pformat(answer),
+            }
+    # return json.dumps(answer)
 
