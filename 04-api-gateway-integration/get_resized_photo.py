@@ -12,12 +12,19 @@ s3_client = boto3.client('s3')
 
 def lambda_handler(event, context):
     L.info('event %s', event)
-    L.info('context %s', context)
-    bucket = 'zj001-photo-resized'
-    key = event['imageKey']
+    L.info('context %s', vars(context))
+    bucket = 'publictest1-image-resized'
+    key = event['queryStringParameters']['filename']
     download_path = '/tmp/{}{}'.format(uuid.uuid4(), key)
     L.info('ready to download %s/%s to %s', bucket, key, download_path)
     s3_client.download_file(bucket, key, download_path)
     with open(download_path, 'rb') as photo:
-        return base64.b64encode(photo.read()).decode('ascii')
+        return {
+            "statusCode": 200,            # a valid HTTP status code
+            "headers": {
+                "Content-Type": "image/jpeg"      # any API-specific custom header
+            },
+            "body": base64.b64encode(photo.read()).decode('ascii'),  # a JSON string / base64 encoded string.
+            "isBase64Encoded":  True  # for binary support
+        }
 
