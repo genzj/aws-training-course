@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zj001-whoami-deployment
+  labels:
+    app: zj001-whoami-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zj001-whoami-pod
+  template:
+    metadata:
+      labels:
+        app: zj001-whoami-pod
+    spec:
+      containers:
+      - name: zj001-whoami-container
+        image: 367481520399.dkr.ecr.us-east-1.amazonaws.com/aws-training:latest
+        ports:
+        - containerPort: 8080
