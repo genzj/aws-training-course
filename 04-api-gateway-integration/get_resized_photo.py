@@ -1,14 +1,14 @@
-import boto3
-import os
-import sys
 import base64
-import uuid
 import logging
+import uuid
+
+import boto3
 
 L = logging.getLogger(__name__)
 L.setLevel(logging.DEBUG)
 
 s3_client = boto3.client('s3')
+
 
 def lambda_handler(event, context):
     L.info('event %s', event)
@@ -24,7 +24,7 @@ def lambda_handler(event, context):
             "headers": {
                 "Content-Type": "image/jpeg"      # any API-specific custom header
             },
-            "body": base64.b64encode(photo.read()).decode('ascii'),  # a JSON string / base64 encoded string.
+            # a JSON string / base64 encoded string.
+            "body": base64.b64encode(photo.read()).decode('ascii'),
             "isBase64Encoded":  True  # for binary support
         }
-
