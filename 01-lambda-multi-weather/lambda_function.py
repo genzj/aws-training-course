@@ -1,7 +1,9 @@
-import hashlib, base64, json
+import base64
+import hashlib
+import json
 from datetime import datetime
-from urllib import request, parse
 from pprint import pprint
+from urllib import parse, request
 
 
 # 和风天气签名生成算法-Python版本
@@ -10,12 +12,12 @@ from pprint import pprint
 # return string 返回参数签名值
 def sign(params, secret):
     canstring = ''
-    #先将参数以其参数名的字典序升序进行排序
-    params = sorted(params.items(), key=lambda item:item[0])
-    #遍历排序后的参数数组中的每一个key/value对
-    for k,v in params:
-        if( k != 'sign' and k != 'key' and v != '') :
-         canstring +=  k + '=' + v + '&'
+    # 先将参数以其参数名的字典序升序进行排序
+    params = sorted(params.items(), key=lambda item: item[0])
+    # 遍历排序后的参数数组中的每一个key/value对
+    for k, v in params:
+        if(k != 'sign' and k != 'key' and v != ''):
+            canstring += k + '=' + v + '&'
     canstring = canstring[:-1]
     canstring += secret
     md5 = hashlib.md5(canstring.encode('utf-8')).digest()
@@ -33,6 +35,7 @@ def get_json(url):
     body = response.read().decode('utf8')
     return json.loads(body)
 
+
 def hefeng():
     params = {
         "location": "Shanghai",
@@ -44,7 +47,7 @@ def hefeng():
     url = 'https://free-api.heweather.com/s6/weather/now?' + query
 
     return get_json(url)
-    
+
 
 def openweathermap():
     params = {
@@ -52,7 +55,8 @@ def openweathermap():
         "appid": "18bc2f96c466fc82cd607d43eb152055",
         "units": "metric",
     }
-    url = 'https://api.openweathermap.org/data/2.5/weather?' + parse.urlencode(params)
+    url = 'https://api.openweathermap.org/data/2.5/weather?' + \
+        parse.urlencode(params)
     return get_json(url)
 
 
