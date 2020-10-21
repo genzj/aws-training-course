@@ -1,0 +1,40 @@
+01-method-setup
+
+AWS Region:
+us-east-1
+
+Path override:
+https://sqs.us-east-1.amazonaws.com/367481520399/<your-queue-name>
+
+Execution role:
+arn:aws:iam::367481520399:role/TRAINING-APIGatewaySQS
+
+----------------------------------------------------------------------------
+
+02-Integration-Request:
+
+HTTP Headers -> Add header:
+Name:
+Content-Type
+
+Mapped from:
+'application/x-www-form-urlencoded'
+
+
+Request body passthrough -> Never
+
+Content-Type -> Add mapping template
+application/json
+
+Action=SendMessage&Version=2012-11-05&MessageBody=$util.urlEncode($input.json('$'))
+
+
+----------------------------------------------------------------------------
+
+References:
+
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html#SQS-SendMessage
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-making-api-requests.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html
+
